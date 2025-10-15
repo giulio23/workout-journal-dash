@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus, Dumbbell, Activity } from "lucide-react";
+import { Plus, Dumbbell, Activity, BarChart3, History } from "lucide-react";
 import DailyMetrics from "@/components/dashboard/DailyMetrics";
 import GymStats from "@/components/dashboard/GymStats";
 import { useNavigate } from "react-router-dom";
@@ -22,13 +21,29 @@ const Index = () => {
                 FitTrack
               </h1>
             </div>
-            <Button 
-              onClick={() => navigate("/workouts/new")}
-              className="bg-gradient-accent hover:opacity-90 transition-opacity"
-            >
-              <Plus className="w-5 h-5 mr-2" />
-              New Workout
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="outline"
+                onClick={() => navigate("/workouts/stats")}
+              >
+                <BarChart3 className="w-5 h-5 mr-2" />
+                Stats
+              </Button>
+              <Button 
+                variant="outline"
+                onClick={() => navigate("/workouts")}
+              >
+                <History className="w-5 h-5 mr-2" />
+                History
+              </Button>
+              <Button 
+                onClick={() => navigate("/workouts/new")}
+                className="bg-gradient-accent hover:opacity-90 transition-opacity"
+              >
+                <Plus className="w-5 h-5 mr-2" />
+                New Workout
+              </Button>
+            </div>
           </div>
         </div>
       </header>
