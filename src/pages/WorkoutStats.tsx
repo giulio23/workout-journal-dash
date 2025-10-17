@@ -1,21 +1,15 @@
-import { Card } from "@/components/ui/card";
-import { ArrowLeft, TrendingUp, Clock, Weight, Dumbbell } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowLeft, TrendingUp, Weight, Target, Percent, Trophy } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import WeeklyChart from "@/components/stats/WeeklyChart";
-import CurrentWeek from "@/components/stats/CurrentWeek";
-import MuscleGroupFrequency from "@/components/stats/MuscleGroupFrequency";
-import WorkoutHistory from "@/components/stats/WorkoutHistory";
+import WorkoutFrequencyChart from "@/components/stats/WorkoutFrequencyChart";
+import ProgressTrendChart from "@/components/stats/ProgressTrendChart";
+import VolumeComparisonChart from "@/components/stats/VolumeComparisonChart";
+import RepRangeDistributionChart from "@/components/stats/RepRangeDistributionChart";
+import { useWorkoutStats } from "@/hooks/useWorkoutStats";
 
 const WorkoutStats = () => {
-  // Mock data
-  const stats = {
-    totalWorkouts: 24,
-    totalTime: 1248, // minutes
-    totalVolume: 45670, // kg
-    todayMinutes: 52,
-    weeklyAverage: 51,
-  };
+  const stats = useWorkoutStats();
 
   return (
     <div className="min-h-screen bg-background">
@@ -31,7 +25,7 @@ const WorkoutStats = () => {
           </h1>
         </div>
 
-        {/* Summary Cards */}
+        {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
           <Card className="p-4 bg-gradient-card border-border">
             <div className="flex items-center gap-3">
@@ -39,8 +33,9 @@ const WorkoutStats = () => {
                 <TrendingUp className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Total Workouts</p>
-                <p className="text-2xl font-bold">{stats.totalWorkouts}</p>
+                <p className="text-sm text-muted-foreground">Sessions</p>
+                <p className="text-xs text-muted-foreground/60">Last 30d</p>
+                <p className="text-2xl font-bold">{stats.sessionsLast30d}</p>
               </div>
             </div>
           </Card>
@@ -48,11 +43,12 @@ const WorkoutStats = () => {
           <Card className="p-4 bg-gradient-card border-border">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-accent/10">
-                <Clock className="h-5 w-5 text-accent" />
+                <Weight className="h-5 w-5 text-accent" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Total Time</p>
-                <p className="text-2xl font-bold">{Math.floor(stats.totalTime / 60)}h {stats.totalTime % 60}m</p>
+                <p className="text-sm text-muted-foreground">Total Volume</p>
+                <p className="text-xs text-muted-foreground/60">Last 30d</p>
+                <p className="text-2xl font-bold">{stats.totalVolumeLast30d.toLocaleString()} kg</p>
               </div>
             </div>
           </Card>
@@ -60,11 +56,12 @@ const WorkoutStats = () => {
           <Card className="p-4 bg-gradient-card border-border">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-success/10">
-                <Weight className="h-5 w-5 text-success" />
+                <Trophy className="h-5 w-5 text-success" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Total Volume</p>
-                <p className="text-2xl font-bold">{(stats.totalVolume / 1000).toFixed(1)}t</p>
+                <p className="text-sm text-muted-foreground">Best 1RM</p>
+                <p className="text-xs text-muted-foreground/60">Last 30d</p>
+                <p className="text-2xl font-bold">{stats.best1RMLast30d.toFixed(1)} kg</p>
               </div>
             </div>
           </Card>
@@ -72,11 +69,12 @@ const WorkoutStats = () => {
           <Card className="p-4 bg-gradient-card border-border">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-warning/10">
-                <Dumbbell className="h-5 w-5 text-warning" />
+                <Target className="h-5 w-5 text-warning" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Today</p>
-                <p className="text-2xl font-bold">{stats.todayMinutes}min</p>
+                <p className="text-sm text-muted-foreground">Avg Load/Rep</p>
+                <p className="text-xs text-muted-foreground/60">Last 30d</p>
+                <p className="text-2xl font-bold">{stats.avgLoadPerRep.toFixed(1)} kg</p>
               </div>
             </div>
           </Card>
@@ -84,27 +82,24 @@ const WorkoutStats = () => {
           <Card className="p-4 bg-gradient-card border-border">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-primary/10">
-                <Clock className="h-5 w-5 text-primary" />
+                <Percent className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Weekly Avg</p>
-                <p className="text-2xl font-bold">{stats.weeklyAverage}min</p>
+                <p className="text-sm text-muted-foreground">Set Completion</p>
+                <p className="text-xs text-muted-foreground/60">Actual vs Planned</p>
+                <p className="text-2xl font-bold">{stats.setCompletionPercent.toFixed(0)}%</p>
               </div>
             </div>
           </Card>
         </div>
 
-        {/* Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          <WeeklyChart />
-          <CurrentWeek />
+        {/* Main Visuals - 2x2 Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <WorkoutFrequencyChart />
+          <ProgressTrendChart />
+          <VolumeComparisonChart />
+          <RepRangeDistributionChart />
         </div>
-
-        {/* Muscle Group Frequency */}
-        <MuscleGroupFrequency />
-
-        {/* Workout History */}
-        <WorkoutHistory />
       </div>
     </div>
   );
